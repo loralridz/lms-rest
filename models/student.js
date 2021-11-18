@@ -8,7 +8,11 @@ var studentSchema = new Schema({
     rollno: {
         type: String,
         required: true
-    }
+    },
+    class:{
+        type: mongoose.Types.ObjectId,
+        ref: 'Class'
+    },
 });
 
 module.exports = mongoose.model('Student', studentSchema);

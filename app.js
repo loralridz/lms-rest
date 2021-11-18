@@ -10,11 +10,15 @@ var adminRouter = require('./routes/admin');
 var studentRouter = require('./routes/student');
 var teacherRouter = require('./routes/teacher');
 var headRouter = require('./routes/head');
-const connection = mongoose.connect('mongodb://localhost:27017/lms', { useNewUrlParser: true, useUnifiedTopology: true });
+
 var app = express();
-connection.then((db) => {
-    console.log("Connected correctly to server");
-}, (err) => { console.log(err); });
+
+const connection = mongoose.connect('mongodb://localhost:27017/lms', { useNewUrlParser: true, useUnifiedTopology: true });
+connection.then(
+    (db) => {
+    console.log("Connected correctly to db");
+},
+ (err) => { console.log(err); });
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -47,6 +51,11 @@ app.use(function(err, req, res, next) {
     // render the error page
     res.status(err.status || 500);
     res.render('error');
+});
+
+// server run 
+app.listen(8080,()=>{
+    console.log('Server is up and running ');
 });
 
 module.exports = app;

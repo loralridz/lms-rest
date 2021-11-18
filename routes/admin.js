@@ -1,9 +1,10 @@
 var express = require('express');
+var Admin = require('../models/admin');
+var Class = require('../models/class');
+var Teacher = require('../models/teacher');
+var Student = require('../models/student');
+
 var router = express.Router();
-// var Admin = require('../models/admin');
-// var Class = require('../models/class');
-// var Teacher = require('../models/teacher');
-// var Student = require('../models/student');
 
 /* GET Operations */
 router.get('/', function(req, res, next) {
@@ -18,7 +19,8 @@ router.get('/classes', function(req, res, next) {
         // Respond with valid data
         res.json(results);
     });
-});
+}
+);
 router.get('/students', function(req, res, next) {
     Student.find().sort('name').exec(function(error, results) {
         if (error) {
@@ -34,7 +36,7 @@ router.get('/teachers', function(req, res, next) {
             return next(error);
         }
         // Respond with valid data
-        res.json(results);
+        res.send(results);
     });
 });
 router.get('/classes/:id', function(req, res, next) {
@@ -68,14 +70,15 @@ router.get('/teachers/:id', function(req, res, next) {
 });
 //POST Operations
 router.post('/addteacher', function(req, res, next) {
+    console.log(req.body);
     Teacher.create(req.body)
         .then((teacher) => {
             console.log('Teacher has been Added ', teacher);
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json(teacher);
-        }, (err) => next(err))
-        .catch((err) => next(err));
+        }, (err) => {console.log(err); next(err)})
+        .catch((err) => {console.log(err); next(err)});
 });
 router.post('/addclass', function(req, res, next) {
     Class.create(req.body)
@@ -126,11 +129,17 @@ router.put('/class/:cid/teacher/:tid', function(req, res, next) {
     });
 });
 router.put('/class/:cid', function(req, res, next) {
-    res.send('respond with a resource');
+    Class.findOneAndUpdate({ _id: req.params.cid }, req.body, function(error, results) {
+        if (error) {
+            return next(error);
+        }
+        // Respond with valid data
+        res.json(results);
+    });
 });
 
 //Delete Operations
-router.delete('/delteacher/:id', function(req, res, next) {
+router.delete('/del-teacher/:id', function(req, res, next) {
     Teacher.deleteOne({ _id: req.params.id }, function(error, results) {
         if (error) {
             return next(error);
@@ -139,7 +148,7 @@ router.delete('/delteacher/:id', function(req, res, next) {
         res.json(results);
     });
 });
-router.delete('/delclass/:id', function(req, res, next) {
+router.delete('/del-class/:id', function(req, res, next) {
     Class.deleteOne({ _id: req.params.id }, function(error, results) {
         if (error) {
             return next(error);
@@ -148,7 +157,7 @@ router.delete('/delclass/:id', function(req, res, next) {
         res.json(results);
     });
 });
-router.delete('/delstudent/:id', function(req, res, next) {
+router.delete('/del-student/:id', function(req, res, next) {
     Student.deleteOne({ _id: req.params.id }, function(error, results) {
         if (error) {
             return next(error);

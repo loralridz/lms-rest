@@ -17,6 +17,10 @@ var classSchema = new Schema({
                 ref: 'Student'
             }
         }]
+    },
+    subject:{
+        type: String,
+        enum: ['tcs', 'web', 'math']
     }
 });
 
